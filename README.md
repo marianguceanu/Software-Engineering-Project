@@ -54,21 +54,18 @@
 
 ## <!-- Make a table with all of the uses cases, having an ID, and their sub use cases -->
 
-| **_Use Case ID_** | **_Use Case_**              | **_Sub use case_**         | **_Actors_** |
-| ----------------- | --------------------------- | -------------------------- | ------------ |
-| 1                 | **Create Destination List** | Create Public Destination  | Admin        |
-|                   |                             | Add Destination            | Admin        |
-|                   |                             | Modify Destination         | Admin        |
-|                   |                             | Remove Destination         | Admin        |
-| 2                 | **Create Bucket List**      | Create Private Destination | User         |
-|                   |                             | Add Destination            | User         |
-|                   |                             | Add Private Destination    | User         |
-|                   |                             | Modifiy Destination        | User         |
-|                   |                             | Remove Destination         | User         |
-| 3                 | **Develop Application**     | Implement Backend          | Developer    |
-|                   |                             | Implement Frontend         | Developer    |
-| 4                 | **Display Items**           | Display items              | Developer    |
-| 5                 | **Manage Account**          | Create Account             | User         |
-|                   |                             | Modify Account             | User         |
-|                   |                             | Remove Account             | User         |
-|                   |                             |                            |              |
+| **_Use case_**                 | **_Actors_** |
+| ------------------------------ | ------------ |
+| Add Destination                | Admin        |
+| Modify Destination             | Admin        |
+| Remove Destination             | Admin        |
+| Add Public Destination         | User         |
+| Add Private Destination        | User         |
+| Modifiy Destination            | User         |
+| Remove Destination             | User         |
+| Display items                  | User, Admin  |
+| Create Account                 | User         |
+| Modify Account                 | User         |
+| Remove Account (Automatically) | User         |
+
+<!-- TODO - add private destination to public list wihtout stay dates AltFLow -->
