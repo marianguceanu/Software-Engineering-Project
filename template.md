@@ -6,6 +6,8 @@
 
 ## **Description**:
 
+## Trigger:
+
 ## Preconditions:
 
 ## Postconditions:

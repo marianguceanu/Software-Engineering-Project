@@ -50,8 +50,8 @@
 | Remove Destination             | Admin        |
 | Add Public Destination         | User         |
 | Add Private Destination        | User         |
-| Modifiy Destination            | User         |
-| Remove Destination             | User         |
+| Modifiy User Destination       | User         |
+| Remove User Destination        | User         |
 | Display items                  | User, Admin  |
 | Create Account                 | User         |
 | Modify Account                 | User         |
