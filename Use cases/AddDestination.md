@@ -22,6 +22,15 @@
 
 ## Normal flow:
 
-- The admin enrolls a new destination
+- The admin enrolls a new destination in the list.
+- The item should have an id, stay dates, title, description, image and geolocation.
+- The admin adds the destination to the list.
+
+## Alternative flow:
+
+- Nil
 
 ## Exception:
+
+- The add cannot be executed due to a database error
+- The item misses some of the properties
