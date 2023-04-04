@@ -14,4 +14,6 @@
 
 ## Normal flow:
 
+## Alternative flow
+
 ## Exception:
