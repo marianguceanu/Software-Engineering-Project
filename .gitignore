@@ -1,2 +1,5 @@
-SE
 .vscode
+SE/bin
+SE/obj
+SE/Properties
+plantuml
