@@ -9,7 +9,7 @@ namespace SE.View
 {
     public class ItemManagement
     {
-        DestinationController dc;
+        DestinationController dc = default!;
 
         public void DisplayItems(ICollection<Destination> destinations) { }
 
@@ -18,6 +18,6 @@ namespace SE.View
             DisplayItems(dc.Destinations);
         }
 
-        
+
     }
 }

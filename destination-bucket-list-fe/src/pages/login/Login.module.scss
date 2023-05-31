@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  .loginImageDiv {
+    margin-top: 6%;
+    width: 70vw;
+    .loginImage {
+      padding: 5%;
+      width: 40vw;
+      height: 60vh;
+    }
+  }
+
+  .loginFormContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    margin-top: 13%;
+    height: 60vh;
+
+    .prompt {
+      font-size: 2rem;
+      display: flex;
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      margin-bottom: 5%;
+      margin-top: 5%;
+      .email {
+        width: 30vh;
+        margin-bottom: 10%;
+      }
+      .password {
+        width: 30vh;
+      }
+    }
+
+    .logInButton {
+      width: 30vh;
+      height: 5vh;
+      text-transform: none;
+      font-size: 1.5rem;
+      border-color: darkkhaki;
+      color: grey;
+      background-color: darkkhaki;
+    }
+  }
+}
