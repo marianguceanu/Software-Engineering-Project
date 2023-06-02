@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-// import the scss file for the login page
+import React from "react";
+import { redirect } from "react-router-dom";
 import style from "./Login.module.scss";
 import {
   TextField,
@@ -11,17 +11,23 @@ import {
   Button,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import "axios";
-import axios from "axios";
+ import axios from "axios";
 
-const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
+function Login(): JSX.Element {
+  const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
   const handleButtonClick = () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const password = (document.getElementById("password") as HTMLInputElement)
+      .value;
     console.log(email, password);
+    if (email === "" || password === "") {
+      alert("Please fill in all fields");
+      return;
+    }
+    redirect("/home");
   };
 
   return (
@@ -30,6 +36,7 @@ const Login = () => {
       <div className={style.loginImageDiv}>
         <img
           src="https://digitalnomads.world/wp-content/uploads/2021/01/bali-for-digital-nomads.jpg"
+          alt="login image"
           className={style.loginImage}
         />
       </div>
@@ -77,6 +84,6 @@ const Login = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Login;
