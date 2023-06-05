@@ -4,3 +4,7 @@ SE/obj
 SE/Properties
 plantuml
 .fake
+SE/Migrations
+SE/SE.db
+SE/SE.db-shm
+SE/SE.db-wal

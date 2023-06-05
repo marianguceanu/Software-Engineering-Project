@@ -17,20 +17,6 @@ namespace SE.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UserDestination>()
-                .HasKey(ud => new { ud.UserId, ud.DestinationId });
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.Id);
-            modelBuilder.Entity<Destination>()
-                .HasKey(d => d.Id);
-
-
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
-            modelBuilder.Entity<Destination>()
-                .HasIndex(d => d.Title)
-                .IsUnique();
 
             // User one to many UserDestination
             modelBuilder.Entity<UserDestination>()
@@ -43,6 +29,18 @@ namespace SE.Data
                 .HasOne(ud => ud.Destination)
                 .WithMany(d => d.AbsUserDestinations)
                 .HasForeignKey(ud => ud.DestinationId);
+
+            // UserDestination composite key
+            modelBuilder.Entity<UserDestination>()
+                .HasKey(ud => new { ud.UserId, ud.DestinationId });
+
+            // Unique indexes
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+            modelBuilder.Entity<Destination>()
+                .HasIndex(d => d.Title)
+                .IsUnique();
         }
     }
 }

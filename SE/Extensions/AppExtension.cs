@@ -10,11 +10,7 @@ namespace SE.Extensions
     {
         public static IServiceCollection AddDataContext(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlServer(config.GetConnectionString("LocalConnection"),
-                sqlServerOptionsAction: sqlOptions => { sqlOptions.EnableRetryOnFailure(); });
-            });
+            services.AddDbContext<DataContext>(options => options.UseSqlite(config.GetConnectionString("LocalConnection")));
             return services;
         }
 

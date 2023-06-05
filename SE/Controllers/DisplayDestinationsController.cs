@@ -5,6 +5,7 @@ using SE.Repository.Interfaces;
 
 namespace SE.Controllers
 {
+    // TODO: Add DTO's for returning the users/destinations
     [ApiController]
     [Route("api/[controller]")]
     public class DisplayDestinationsController : ControllerBase

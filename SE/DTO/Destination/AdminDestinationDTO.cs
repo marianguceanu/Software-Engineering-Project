@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SE.DTO
+namespace SE.DTO.User
 {
     public class AdminDestinationDTO
     {

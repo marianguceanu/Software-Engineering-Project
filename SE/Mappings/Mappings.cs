@@ -6,7 +6,8 @@ namespace SE.Mappings
     {
         public Mappings()
         {
-            CreateMap<DTO.DestinationDTO, Models.Destination>().ReverseMap();
+            CreateMap<DTO.Destination.DestinationDTO, Models.Destination>().ReverseMap();
+            CreateMap<DTO.User.AddLoginDTO, Models.User>().ReverseMap();
         }
     }
 }

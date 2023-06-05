@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace SE.Models
 {
 
@@ -8,7 +10,9 @@ namespace SE.Models
         public int Id { get; set; } = default!;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Type = "normal";
-        public virtual ICollection<UserDestination> AbsUserDestinations { get; set; } = default!;
+        public string Type { get; set; } = string.Empty;
+
+        [NotMapped]
+        public virtual IEnumerable<UserDestination> AbsUserDestinations { get; set; } = default!;
     }
 }

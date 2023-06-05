@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SE.Models
 {
@@ -12,6 +13,8 @@ namespace SE.Models
         public string Image { get; set; } = string.Empty;
         public DateTime StartDate { get; set; } = default!;
         public DateTime EndDate { get; set; } = default!;
-        public virtual ICollection<UserDestination> AbsUserDestinations { get; set; } = default!;
+
+        [NotMapped]
+        public virtual IEnumerable<UserDestination> AbsUserDestinations { get; set; } = default!;
     }
 }

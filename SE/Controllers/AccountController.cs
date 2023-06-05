@@ -1,5 +1,6 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SE.DTO;
+using SE.DTO.User;
 using SE.Exceptions;
 using SE.Models;
 using SE.Repository.Interfaces;
@@ -13,30 +14,35 @@ namespace SE.Controllers
         private User CurrentUser { get; set; } = default!;
         private IUserRepository UserRepository { get; set; } = default!;
         private IUserDestinationRepository UserDestinationRepository { get; set; } = default!;
+        private readonly IMapper _mapper;
 
-        public AccountController(IUserRepository userRepository, IUserDestinationRepository userDestinationRepository)
+        public AccountController(IUserRepository userRepository, IUserDestinationRepository userDestinationRepository, IMapper mapper)
         {
+            _mapper = mapper;
             UserRepository = userRepository;
             UserDestinationRepository = userDestinationRepository;
+        }
+
+        [HttpGet("all")]
+        public async Task<IEnumerable<User>> GetAll()
+        {
+            return await UserRepository.GetAll();
         }
 
         [HttpPost("register")]
         public async void CreateAccount([FromBody] AddLoginDTO dto)
         {
-            var result = await UserRepository.Add(new User { Username = dto.Username, Password = dto.Password });
+            var result = await UserRepository.Add(_mapper.Map<User>(dto));
             if (!result)
             {
                 throw new DataValidationException();
             }
         }
 
-        [HttpDelete("remove")]
-        public async void RemoveAccount([FromBody] string username)
+        [HttpDelete("remove/{username}")]
+        public async void RemoveAccount([FromRoute] string username, [FromBody] string password)
         {
-            if (CurrentUser.Username != username)
-            {
-                throw new AuthorizationException();
-            }
+            var user = await UserRepository.GetUserByUsernameAndPassword(username, password);
             await UserRepository.Delete(CurrentUser);
         }
 
@@ -51,15 +57,15 @@ namespace SE.Controllers
             await UserRepository.Update(CurrentUser);
         }
 
-        [HttpPost("")]
-        public async void Login([FromBody] AddLoginDTO dto)
+        [HttpPost("login")]
+        public async Task<User?> Login([FromBody] AddLoginDTO dto)
         {
             var user = await UserRepository.GetUserByUsernameAndPassword(dto.Username, dto.Password);
             if (user == null)
             {
                 throw new AuthenticationException();
             }
-            CurrentUser = user;
+            return user;
         }
 
         [HttpPost("logout")]

@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SE.DTO;
+using SE.DTO.Destination;
 using SE.Exceptions;
 using SE.Models;
 using SE.Repository.Interfaces;
