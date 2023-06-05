@@ -4,9 +4,9 @@ namespace SE.Repository.Interfaces
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-        Task<User?> GetUserByUsername(string username);
-        Task<User?> GetUserById(int id);
-        Task<User?> GetUserByUsernameAndPassword(string username, string password);
-        Task<List<UserDestination>> GetUserDestinations(int userId);
+        public Task<User?> GetUserByUsername(string username);
+        public Task<User?> GetUserById(int id);
+        public Task<User?> GetUserByUsernameAndPassword(string username, string password);
+        public Task<List<UserDestination>> GetUserDestinations(int userId);
     }
 }
