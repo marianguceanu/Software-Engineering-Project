@@ -1,31 +1,111 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SE.DTO;
+using SE.Exceptions;
 using SE.Models;
+using SE.Repository.Interfaces;
 
 namespace SE.Controllers
 {
-    public class DestinationControllerAdmin : DestinationController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DestinationControllerAdmin : ControllerBase
     {
-        public DestinationControllerAdmin(User user) : base(user)
+        private IDestinationRepository _destinationRepository;
+        private IUserRepository _userRepository;
+        private IUserDestinationRepository _userDestinationRepository;
+        private IMapper _mapper;
+        private User _currentUser = default!;
+
+        public DestinationControllerAdmin(IDestinationRepository destinationRepository, IUserRepository userRepository, IUserDestinationRepository userDestinationRepository, IMapper mapper)
         {
-            if (user.Type != "admin")
-                throw new Exception("User is not an admin user");
+            _destinationRepository = destinationRepository;
+            _userDestinationRepository = userDestinationRepository;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public void AddDestination(Destination destination)
+        [HttpPost("admin/add/{username}")]
+        public async void AddDestination([FromBody] DestinationDTO destination, [FromRoute] string username)
         {
-            this.Destinations.Add(destination);
+            // Validating the user
+
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+
+            if (_currentUser.Type != "admin")
+            {
+                throw new AuthorizationException();
+            }
+
+            var Destination = _mapper.Map<Destination>(destination);
+            await _destinationRepository.Add(Destination);
+            await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = Destination.Id });
         }
 
-        public void RemoveDestination(Destination destination)
+
+        [HttpDelete("admin/remove/{username}")]
+        public async void RemoveDestination([FromBody] int destinationId, [FromRoute] string username)
         {
-            this.Destinations.Remove(destination);
+            // Validating the user
+
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+
+            if (_currentUser.Type != "admin")
+            {
+                throw new AuthorizationException();
+            }
+
+
+            var res = await _destinationRepository.GetDestinationById(destinationId);
+            if (res == null)
+            {
+                throw new DataValidationException();
+            }
+            await _destinationRepository.Delete(res);
+            var userDestinations = await _userDestinationRepository.GetUserDestinationsByDestinationId(destinationId);
+            foreach (var userDestination in userDestinations)
+            {
+                await _userDestinationRepository.Delete(userDestination);
+            }
         }
 
-        public void ModifyDestination(int DestinationId)
+
+        [HttpPut("modify/{username}/{destinationId:int}")]
+        public async void ModifyDestination([FromBody] DestinationDTO destination, [FromRoute] int destinationId, [FromRoute] string username)
         {
-            var Dest = this.Destinations.FirstOrDefault(d => d.Id == DestinationId);
-            if (Dest == null)
-                throw new Exception("Destination not found");
-            this.Destinations.Remove(Dest);
+            // Validating the user
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+            if (_currentUser.Type != "admin")
+            {
+                throw new AuthorizationException();
+            }
+
+            var Destination = _mapper.Map<Destination>(destination);
+            // Validating the destination
+            if (destinationId != Destination.Id)
+            {
+                throw new DataValidationException();
+            }
+            var res = await _destinationRepository.Update(Destination);
+            if (!res)
+            {
+                throw new DataValidationException();
+            }
         }
     }
 }

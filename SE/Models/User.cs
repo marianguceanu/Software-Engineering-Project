@@ -1,14 +1,14 @@
+using System.ComponentModel.DataAnnotations;
 namespace SE.Models
 {
+
     public class User
     {
-        public string Username { get; set; } = default!;
-        public string Password { get; set; } = default!;
+        [Key]
+        public int Id { get; set; } = default!;
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public string Type = "normal";
-        public User(string username, string password)
-        {
-            Username = username;
-            Password = password;
-        }
+        public virtual ICollection<UserDestination> AbsUserDestinations { get; set; } = default!;
     }
 }

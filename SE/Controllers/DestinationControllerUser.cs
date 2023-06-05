@@ -1,24 +1,122 @@
-using System.Globalization;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SE.DTO;
+using SE.Exceptions;
 using SE.Models;
-using SE.View;
+using SE.Repository.Interfaces;
 
 namespace SE.Controllers
 {
-    public class DestinationControllerUser : DestinationController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class DestinationControllerUser : ControllerBase
     {
-        private ICollection<Destination> UserDestinations = default!;
-        ItemManagement im = new ItemManagement();
-        public DestinationControllerUser(User user) : base(user)
+        private IDestinationRepository _destinationRepository;
+        private IUserRepository _userRepository;
+        private IUserDestinationRepository _userDestinationRepository;
+        private IMapper _mapper;
+        private User _currentUser = default!;
+        public DestinationControllerUser(IDestinationRepository destinationRepository, IUserDestinationRepository userDestinationRepository, IUserRepository userRepository, IMapper mapper)
         {
-            if (user.Type != "normal")
-                throw new Exception("User is not a normal user");
-
-
+            _destinationRepository = destinationRepository;
+            _userDestinationRepository = userDestinationRepository;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public void AddPublicDestination(int PublicDestId) { }
-        public void AddPrivateDestination(int PrivateDestId) { }
-        public void RemoveDestination(int DestId) { }
-        public void ModifyDestination(int DestId) { }
+        [HttpPost("normal/add/public/{username}")]
+        public async void AddPublicDestination([FromRoute] string username, [FromBody] int PublicDestId)
+        {
+            // Validating the user
+
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+
+
+            if (_currentUser.Type != "normal")
+            {
+                throw new AuthorizationException();
+            }
+
+            var destination = await _destinationRepository.GetById(PublicDestId);
+            if (destination == null)
+            {
+                throw new DataValidationException();
+            }
+
+            await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = destination.Id });
+        }
+
+
+        [HttpPost("normal/add/private/{username}")]
+        public async void AddPrivateDestination([FromRoute] string username, [FromBody] DestinationDTO destination)
+        {
+            // Validating the user
+
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+
+            if (_currentUser.Type != "normal")
+            {
+                throw new AuthorizationException();
+            }
+
+            var Destination = _mapper.Map<Destination>(destination);
+
+            await _destinationRepository.Add(Destination);
+            await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = Destination.Id });
+        }
+
+
+        [HttpDelete("normal/remove/{username}")]
+        public async void RemoveDestination([FromRoute] string username, [FromBody] int DestId)
+        {
+            // Validating the user
+
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+
+            var destination = await _destinationRepository.GetById(DestId);
+            if (destination == null)
+            {
+                throw new DataValidationException();
+            }
+            await _userDestinationRepository.Delete(new UserDestination { UserId = _currentUser.Id, DestinationId = destination.Id });
+        }
+
+
+        [HttpPut("normal/modify/{username}")]
+        public async void ModifyDestination([FromRoute] string username, [FromBody] DestinationDTO destination)
+        {
+            // Validating the user
+
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
+            {
+                throw new AuthenticationException();
+            }
+            _currentUser = user;
+
+            var Destination = _mapper.Map<Destination>(destination);
+
+            var userDestination = await _userDestinationRepository.GetUserDestinationById(_currentUser.Id, Destination.Id);
+            if (userDestination == null)
+            {
+                throw new AuthorizationException();
+            }
+            await _destinationRepository.Update(Destination);
+        }
     }
 }
