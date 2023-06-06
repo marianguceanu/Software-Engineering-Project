@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SE.DTO.Destination;
+using SE.DTO.User;
 using SE.Exceptions;
 using SE.Models;
 using SE.Repository.Interfaces;
@@ -26,7 +27,7 @@ namespace SE.Controllers
         }
 
         [HttpPost("admin/add/{username}")]
-        public async void AddDestination([FromBody] DestinationDTO destination, [FromRoute] string username)
+        public async void AddDestination([FromBody] AdminDestinationDTO destination, [FromRoute] string username)
         {
             // Validating the user
 
@@ -43,6 +44,7 @@ namespace SE.Controllers
             }
 
             var Destination = _mapper.Map<Destination>(destination);
+            Destination.isPrivate = false;
             await _destinationRepository.Add(Destination);
             await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = Destination.Id });
         }
@@ -81,7 +83,7 @@ namespace SE.Controllers
 
 
         [HttpPut("modify/{username}/{destinationId:int}")]
-        public async void ModifyDestination([FromBody] DestinationDTO destination, [FromRoute] int destinationId, [FromRoute] string username)
+        public async void ModifyDestination([FromBody] AdminDestinationDTO destination, [FromRoute] int destinationId, [FromRoute] string username)
         {
             // Validating the user
             var user = await _userRepository.GetUserByUsername(username);

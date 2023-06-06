@@ -18,9 +18,19 @@ namespace SE.Repository
             return _context.Destinations.FirstOrDefaultAsync(d => d.Id.Equals(id));
         }
 
-        public Task<Destination?> GetDestinationByTitle(string title)
+        public Task<Destination?> GetPrivateDestinationByTitle(string title)
         {
-            return _context.Destinations.FirstOrDefaultAsync(d => d.Title.Equals(title));
+            return _context.Destinations.FirstOrDefaultAsync(d => d.Title.Equals(title) && d.isPrivate.Equals(true));
+        }
+
+        public Task<Destination?> GetPublicDestinationByTitle(string title)
+        {
+            return _context.Destinations.FirstOrDefaultAsync(d => d.Title.Equals(title) && d.isPrivate.Equals(false));
+        }
+
+        public Task<List<Destination>> GetPublicDestinations()
+        {
+            return _context.Destinations.Where(d => d.isPrivate.Equals(false)).ToListAsync();
         }
 
         public Task<List<UserDestination>> GetUserDestinations(int userId)

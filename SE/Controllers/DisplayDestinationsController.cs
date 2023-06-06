@@ -1,11 +1,12 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SE.DTO.Destination;
 using SE.Exceptions;
 using SE.Models;
 using SE.Repository.Interfaces;
 
 namespace SE.Controllers
 {
-    // TODO: Add DTO's for returning the users/destinations
     [ApiController]
     [Route("api/[controller]")]
     public class DisplayDestinationsController : ControllerBase
@@ -13,51 +14,26 @@ namespace SE.Controllers
         private IDestinationRepository _destinationRepository;
         private IUserRepository _userRepository;
         private IUserDestinationRepository _userDestinationRepository;
+        private readonly IMapper _mapper;
         private User _currentUser = default!;
 
-        public DisplayDestinationsController(IDestinationRepository destinationRepository, IUserRepository userRepository, IUserDestinationRepository userDestinationRepository)
+        public DisplayDestinationsController(IMapper mapper, IDestinationRepository destinationRepository, IUserRepository userRepository, IUserDestinationRepository userDestinationRepository)
         {
             _userDestinationRepository = userDestinationRepository;
             _userRepository = userRepository;
             _destinationRepository = destinationRepository;
+            _mapper = mapper;
         }
 
-        [HttpGet("get/public/{username}")]
-        public async Task<List<Destination>> GetPublicDestinations([FromRoute] string username)
+        [HttpGet("get/public/")]
+        public async Task<List<DestinationDTO>> GetPublicDestinations()
         {
-            var user = await _userRepository.GetUserByUsername(username);
-            if (user == null)
-            {
-                throw new AuthenticationException();
-            }
-            _currentUser = user;
-            if (_currentUser.Type != "admin")
-            {
-                throw new AuthorizationException();
-            }
-
-            var publicUD = await _userDestinationRepository.GetUserDestinationsByUserId(_currentUser.Id);
-            var publicDestinations = new List<Destination>();
-            if (publicUD == null)
-            {
-                throw new DataValidationException();
-            }
-
-            foreach (var ud in publicUD)
-            {
-                var destination = await _destinationRepository.GetById(ud.DestinationId);
-                if (destination == null)
-                {
-                    throw new DataValidationException();
-                }
-                publicDestinations.Add(destination);
-            }
-
-            return publicDestinations;
+            var destinations = await _destinationRepository.GetPublicDestinations();
+            return _mapper.Map<List<DestinationDTO>>(destinations);
         }
 
         [HttpGet("get/private/{username}")]
-        public async Task<List<Destination>> GetPrivateDestinations([FromRoute] string username)
+        public async Task<List<DestinationDTO>> GetPrivateDestinations([FromRoute] string username)
         {
             var user = await _userRepository.GetUserByUsername(username);
             if (user == null)
@@ -65,10 +41,6 @@ namespace SE.Controllers
                 throw new AuthenticationException();
             }
             _currentUser = user;
-            if (_currentUser.Type != "normal")
-            {
-                throw new AuthorizationException();
-            }
 
             var privateUD = await _userDestinationRepository.GetUserDestinationsByUserId(_currentUser.Id);
             var privateDestinations = new List<Destination>();
@@ -87,7 +59,7 @@ namespace SE.Controllers
                 privateDestinations.Add(destination);
             }
 
-            return privateDestinations;
+            return _mapper.Map<List<DestinationDTO>>(privateDestinations);
         }
     }
 }

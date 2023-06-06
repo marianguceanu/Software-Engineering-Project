@@ -58,14 +58,14 @@ namespace SE.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<User?> Login([FromBody] AddLoginDTO dto)
+        public async Task<AddLoginDTO> Login([FromBody] AddLoginDTO dto)
         {
             var user = await UserRepository.GetUserByUsernameAndPassword(dto.Username, dto.Password);
             if (user == null)
             {
                 throw new AuthenticationException();
             }
-            return user;
+            return _mapper.Map<AddLoginDTO>(user);
         }
 
         [HttpPost("logout")]

@@ -4,8 +4,7 @@ namespace SE.DTO.User
 {
     public class AdminDestinationDTO
     {
-        [Required]
-        public string Username { get; set; } = default!;
+        public int id { get; set; }
         [Required]
         public string Geolocation { get; set; } = default!;
         [Required]

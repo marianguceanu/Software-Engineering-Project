@@ -38,9 +38,6 @@ namespace SE.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
-            modelBuilder.Entity<Destination>()
-                .HasIndex(d => d.Title)
-                .IsUnique();
         }
     }
 }

@@ -47,8 +47,12 @@ namespace SE.Controllers
             {
                 throw new DataValidationException();
             }
+            destination.Id = 0;
 
-            await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = destination.Id });
+            var destToAdd = _mapper.Map<Destination>(destination);
+            destToAdd.isPrivate = true;
+            await _destinationRepository.Add(destToAdd);
+            await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = destToAdd.Id });
         }
 
 
@@ -70,7 +74,7 @@ namespace SE.Controllers
             }
 
             var Destination = _mapper.Map<Destination>(destination);
-
+            Destination.isPrivate = true;
             await _destinationRepository.Add(Destination);
             await _userDestinationRepository.Add(new UserDestination { UserId = _currentUser.Id, DestinationId = Destination.Id });
         }
@@ -89,7 +93,7 @@ namespace SE.Controllers
             _currentUser = user;
 
             var destination = await _destinationRepository.GetById(DestId);
-            if (destination == null)
+            if (destination == null || !destination.isPrivate)
             {
                 throw new DataValidationException();
             }
@@ -112,7 +116,7 @@ namespace SE.Controllers
             var Destination = _mapper.Map<Destination>(destination);
 
             var userDestination = await _userDestinationRepository.GetUserDestinationById(_currentUser.Id, Destination.Id);
-            if (userDestination == null)
+            if (userDestination == null || !Destination.isPrivate)
             {
                 throw new AuthorizationException();
             }

@@ -11,9 +11,9 @@ namespace SE.Models
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
+        public bool isPrivate { get; set; } = false;
         public DateTime StartDate { get; set; } = default!;
         public DateTime EndDate { get; set; } = default!;
-
         [NotMapped]
         public virtual IEnumerable<UserDestination> AbsUserDestinations { get; set; } = default!;
     }

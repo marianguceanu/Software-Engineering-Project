@@ -45,10 +45,10 @@ namespace SE.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("isPrivate")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("Title")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.ToTable("Destinations");
                 });
