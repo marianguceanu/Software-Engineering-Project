@@ -82,7 +82,7 @@ namespace SE.Controllers
         }
 
 
-        [HttpPut("modify/{username}/{destinationId:int}")]
+        [HttpPut("admin/modify/{username}/{destinationId:int}")]
         public async void ModifyDestination([FromBody] AdminDestinationDTO destination, [FromRoute] int destinationId, [FromRoute] string username)
         {
             // Validating the user

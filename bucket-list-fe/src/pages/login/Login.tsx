@@ -11,23 +11,45 @@ import {
   Button,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { login } from "../../util/urls";
 import axios from "axios";
+import { type } from "os";
 
-function Login(): JSX.Element {
+export interface User {
+  username: string;
+  password: string;
+  type: string;
+}
+
+export default function Login({
+  setUser,
+}: React.SetStateAction<User | null>): JSX.Element {
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
-
+  const user: User = {
+    username: "",
+    password: "",
+    type: "",
+  };
   const handleButtonClick = () => {
     const email = (document.getElementById("email") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement)
       .value;
-    console.log(email, password);
-    if (email === "" || password === "") {
-      alert("Please fill in all fields");
-      return;
-    }
-    redirect("/home");
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "text/plain",
+    };
+    setUser(user);
+    console.log(JSON.stringify(user));
+    axios.post(login, JSON.stringify(user), { headers }).then((res) => {
+      console.log(res);
+      if (res.data.status === "success") {
+        redirect("/home");
+      } else {
+        alert("Login failed");
+      }
+    });
   };
 
   return (
@@ -85,5 +107,3 @@ function Login(): JSX.Element {
     </div>
   );
 }
-
-export default Login;
