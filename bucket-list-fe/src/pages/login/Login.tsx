@@ -1,5 +1,5 @@
 import React from "react";
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import style from "./Login.module.scss";
 import {
   TextField,
@@ -11,9 +11,8 @@ import {
   Button,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { login } from "../../util/urls";
+import { headers, login } from "../../util/urls";
 import axios from "axios";
-import { type } from "os";
 
 export interface User {
   username: string;
@@ -21,36 +20,60 @@ export interface User {
   type: string;
 }
 
-export default function Login({
-  setUser,
-}: React.SetStateAction<User | null>): JSX.Element {
-  const [showPassword, setShowPassword] = React.useState(false);
+export default function Login(props: any): React.JSX.Element {
+  // States
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
-  const user: User = {
+  const [sentUser, setSentUser] = React.useState<User>({
     username: "",
     password: "",
     type: "",
-  };
-  const handleButtonClick = () => {
-    const email = (document.getElementById("email") as HTMLInputElement).value;
-    const password = (document.getElementById("password") as HTMLInputElement)
-      .value;
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "text/plain",
-    };
-    setUser(user);
-    console.log(JSON.stringify(user));
-    axios.post(login, JSON.stringify(user), { headers }).then((res) => {
-      console.log(res);
-      if (res.data.status === "success") {
-        redirect("/home");
-      } else {
-        alert("Login failed");
-      }
+  });
+  const [receivedUser, setReceivedUser] = React.useState<User>({
+    username: "",
+    password: "",
+    type: "",
+  });
+  var [email, setEmail] = React.useState<string>("");
+  var [password, setPassword] = React.useState<string>("");
+
+  // Should change the sent user until the received user is changed
+  React.useEffect(() => {
+    setSentUser({
+      username: email,
+      password: password,
+      type: "",
     });
-  };
+    console.log(sentUser);
+  }, [receivedUser]);
+
+  // Button go brr
+  function handleButtonClick() {
+    setSentUser({
+      username: email,
+      password: password,
+      type: "",
+    });
+    console.log(sentUser);
+
+    axios
+      .post(login, JSON.stringify(sentUser), { headers })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("Received" + JSON.stringify(res.data));
+          setReceivedUser(res.data);
+          window.localStorage.setItem("username", receivedUser.username);
+          window.localStorage.setItem("password", receivedUser.password);
+          window.localStorage.setItem("type", receivedUser.type);
+          navigate("/home");
+        } else {
+          alert("Login failed");
+        }
+      })
+      .catch((Error) => {});
+  }
 
   return (
     <div className={style.container}>
@@ -71,7 +94,16 @@ export default function Login({
         {/* Inputs */}
         <div className={style.inputs}>
           {/* Email */}
-          <TextField id="email" label="Email" className={style.email} />
+          <TextField
+            id="email"
+            label="Email"
+            className={style.email}
+            onChange={() => {
+              setEmail(
+                (document.getElementById("email") as HTMLInputElement).value
+              );
+            }}
+          />
 
           {/* Password */}
           <FormControl variant="outlined">
@@ -93,6 +125,12 @@ export default function Login({
               }
               label="Password"
               className={style.password}
+              onChange={() => {
+                setPassword(
+                  (document.getElementById("password") as HTMLInputElement)
+                    .value
+                );
+              }}
             />
           </FormControl>
         </div>

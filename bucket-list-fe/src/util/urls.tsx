@@ -22,3 +22,8 @@ const displayDestinationsController =
   "http://localhost:5000/api/DisplayDestinations/get";
 export const getPublicDestinations = `${displayDestinationsController}/public`; // No username needed
 export const getPrivateDestinations = `${displayDestinationsController}/private`;
+
+export const headers = {
+  "Content-Type": "application/json",
+  Accept: "text/plain",
+};

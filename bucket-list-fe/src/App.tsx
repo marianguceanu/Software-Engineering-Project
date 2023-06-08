@@ -7,17 +7,15 @@ import {
   Routes,
   BrowserRouter,
 } from "react-router-dom";
-import Home from "./pages/home/Home";
+import HomeAdmin from "./pages/home/admin/HomeAdmin";
 import React from "react";
 
-
 function App() {
-  const [user, setUser] = React.useState<User | null>(null);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/" element={<Login setUser={setUser} />} />
+        <Route path="/home" element={<HomeAdmin />} />
+        <Route path="/" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
