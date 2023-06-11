@@ -1,11 +1,12 @@
 import React from "react";
 import {
   adminRemove,
+  getPrivateDestinations,
   getPublicDestinations,
   headers,
 } from "../../../util/urls";
 import axios from "axios";
-import style from "./HomeAdmin.module.scss";
+import style from "./HomeUser.module.scss";
 import { Button, TextField } from "@mui/material";
 
 interface Destination {
@@ -19,12 +20,13 @@ interface Destination {
   isPrivate: boolean;
 }
 
-export default function HomeAdmin(): JSX.Element {
+export default function HomeUser(): JSX.Element {
   const username = window.localStorage.getItem("username");
-  const url = `${getPublicDestinations}`;
+  const url = `${getPrivateDestinations}/${username}`;
   const [destinations, setDestinations] = React.useState<Destination[]>([]);
 
   React.useEffect(() => {
+    console.log("Saved username" + username);
     axios
       .get(url, { headers })
       .then((res) => {
@@ -33,8 +35,6 @@ export default function HomeAdmin(): JSX.Element {
       .catch((Error) => {});
   }, []);
   console.log(destinations);
-
-  const handleDelete = (id: number) => {};
 
   const destinationComponents = destinations.map((dest) => {
     return (
@@ -46,14 +46,7 @@ export default function HomeAdmin(): JSX.Element {
           <p>Description: {dest.description}</p>
           <p>Start date: {dest.startDate.toString()}</p>
           <p>End date: {dest.endDate.toString()}</p>
-          <Button
-            className={style.deleteButton}
-            onClick={() => {
-              handleDelete(dest.id);
-            }}
-          >
-            Delete
-          </Button>
+          <Button className={style.deleteButton}>Delete</Button>
           <Button className={style.updateButton}>Update</Button>
         </div>
         <img

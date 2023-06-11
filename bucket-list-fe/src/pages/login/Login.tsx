@@ -64,10 +64,15 @@ export default function Login(props: any): React.JSX.Element {
         if (res.status === 200) {
           console.log("Received" + JSON.stringify(res.data));
           setReceivedUser(res.data);
-          window.localStorage.setItem("username", receivedUser.username);
-          window.localStorage.setItem("password", receivedUser.password);
-          window.localStorage.setItem("type", receivedUser.type);
-          navigate("/home");
+          console.log(receivedUser);
+          window.localStorage.setItem("username", res.data.username);
+          window.localStorage.setItem("password", res.data.password);
+          window.localStorage.setItem("type", res.data.type);
+          if (res.data.type == "admin") {
+            navigate("/home/admin");
+          } else {
+            navigate("/home/user");
+          }
         } else {
           alert("Login failed");
         }
